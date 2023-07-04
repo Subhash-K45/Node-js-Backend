@@ -144,11 +144,11 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user || bcrypt.compare(password,user.password)) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({email:user.email}, JWT_SECRET);
+    const token = jwt.sign({ email: user.email }, JWT_SECRET);
 
     res.send({ token });
   } catch (error) {
@@ -156,6 +156,7 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ message: "Error logging in" });
   }
 });
+
 
 router.post('/signup', async (req, res) => {
   try {
