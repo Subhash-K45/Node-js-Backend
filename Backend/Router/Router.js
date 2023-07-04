@@ -22,7 +22,7 @@ router.get("/", async (req, res) => {
 Product.collection.createIndex({ name: 1 });
 Product.collection.createIndex({ createdAt: -1 });
 
-router.post("/",MiddleWare, async (req, res) => {
+router.post("/", async (req, res) => {
   console.log(req.body);
   const { productID, name, price, featured, rating, createdAt, company } = req.body;
   const findId=await Product.findOne({productID})
@@ -50,7 +50,7 @@ router.post("/",MiddleWare, async (req, res) => {
   }
 });
 
-router.put("/:id",MiddleWare, async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const {id} = (req.params);
     const { productID, name, price, featured, rating, createdAt, company } = req.body;
@@ -77,7 +77,7 @@ router.put("/:id",MiddleWare, async (req, res) => {
   }
 });
 
-router.delete("/:id",MiddleWare, async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const { id } = Number(req.params);
    const{productID}=req.body
@@ -93,7 +93,7 @@ router.delete("/:id",MiddleWare, async (req, res) => {
   }
 });
 
-router.get("/featured", MiddleWare,async (req, res) => {
+router.get("/featured",async (req, res) => {
   try {
     const featuredProducts = await Product.find({ featured: true });
     if (!featuredProducts.length) {
@@ -106,7 +106,7 @@ router.get("/featured", MiddleWare,async (req, res) => {
   }
 });
 
-router.get("/price/:maxprice",MiddleWare, async (req, res) => {
+router.get("/price/:maxprice", async (req, res) => {
     try {
         const{maxprice}=(req.params)
         op=(Number((maxprice).slice(1,)))
@@ -124,7 +124,7 @@ router.get("/price/:maxprice",MiddleWare, async (req, res) => {
   
   
 
-router.get("/rating/:minrating",MiddleWare, async (req, res) => {
+router.get("/rating/:minrating", async (req, res) => {
   try {
     const op=req.params.minrating
     const minRating = Number(op.slice(1,));

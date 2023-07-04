@@ -21,9 +21,9 @@ const Login = () => {
     e.preventDefault()
     isState(prev=>!prev)
     console.log(email,password)
-    await axios.post("/login",{
-      Email:email,
-      Password:password
+    await axios.post("https://frail-uniform-foal.cyclic.app/login",{
+      email:email,
+      password:password
       }).then(res=>console.log(res.data)).catch(err=>console.log(err))
   }
 return(
