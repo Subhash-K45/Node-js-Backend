@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Product Management</title>
+</head>
+<body>
+  <h1>Login</h1>
+  <!-- Login form code -->
+
+  <h1>Signup</h1>
+  <!-- Signup form code -->
+
+  <h1>Product Management</h1>
+  <button id="fetchFeatured">Fetch Featured Products</button>
+  <button id="fetchByPrice">Fetch Products by Price</button>
+  <button id="fetchByRating">Fetch Products by Rating</button>
+  <button id="addProduct">Add Product</button>
+  <button id="updateProduct">Update Product</button>
+  <button id="deleteProduct">Delete Product</button>
+
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    // Fetch featured products
+    document.getElementById('fetchFeatured').addEventListener('click', async () => {
+      try {
+        const response = await axios.get('https://product-api-7eap.onrender.com/');
+        const featuredProducts = response.data;
+        console.log(featuredProducts);
+        // Perform further operations with featured products
+      } catch (error) {
+        console.log(error.response.data.message);
+      }
+    });
+
+    // Fetch products by price
+    document.getElementById('fetchByPrice').addEventListener('click', async () => {
+      // Prompt the user to enter the maximum price
+      const maxPrice = prompt('Enter the maximum price:');
+      try {
+        const response = await axios.get(`https://product-api-7eap.onrender.com/price/${maxPrice}`);
+        const productsByPrice = response.data;
+        console.log(productsByPrice);
+        // Perform further operations with products by price
+      } catch (error) {
+        console.log(error.response.data.message);
+      }
+    });
+
+    // Fetch products by rating
+    document.getElementById('fetchByRating').addEventListener('click', async () => {
+      // Prompt the user to enter the minimum rating
+      const minRating = prompt('Enter the minimum rating:');
+      try {
+        const response = await axios.get(`https://product-api-7eap.onrender.com/rating/${minRating}`);
+        const productsByRating = response.data;
+        console.log(productsByRating);
+        // Perform further operations with products by rating
+      } catch (error) {
+        console.log(error.response.data.message);
+      }
+    });
+
+    // Add product
+    document.getElementById('addProduct').addEventListener('click', async () => {
+      // Prompt the user to enter product details
+      const productID = prompt('Enter the product ID:');
+      const name = prompt('Enter the product name:');
+      const price = prompt('Enter the product price:');
+      const featured = prompt('Is the product featured? (true/false):');
+      const rating = prompt('Enter the product rating:');
+      const createdAt = prompt('Enter the product creation date:');
+      const company = prompt('Enter the product company:');
+      try {
+        const response = await axios.post('https://product-api-7eap.onrender.com/', {
+          productID,
+          name,
+          price,
+          featured,
+          rating,
+          createdAt,
+          company
+        });
+        console.log(response.data.message);
+      } catch (error) {
+        console.log(error.response.data.message);
+      }
+    });
+
+    // Update product
+    document.getElementById('updateProduct').addEventListener('click', async () => {
+      // Prompt the user to enter the product ID and updated details
+      const productID = prompt('Enter the product ID to update:');
+      const name = prompt('Enter the updated product name:');
+      const price = prompt('Enter the updated product price:');
+      const featured = prompt('Is the product featured? (true/false):');
+      const rating = prompt('Enter the updated product rating:');
+      const createdAt = prompt('Enter the updated product creation date:');
+      const company = prompt('Enter the updated product company:');
+      try {
+        const response = await axios.put(`https://product-api-7eap.onrender.com/${productID}`, {
+          productID,
+          name,
+          price,
+          featured,
+          rating,
+          createdAt,
+          company
+        });
+        console.log(response.data.message);
+      } catch (error) {
+        console.log(error.response.data.message);
+      }
+    });
+
+    // Delete product
+    document.getElementById('deleteProduct').addEventListener('click', async () => {
+      // Prompt the user to enter the product ID to delete
+      const productID = prompt('Enter the product ID to delete:');
+      try {
+        const response = await axios.delete(`https://product-api-7eap.onrender.com/${productID}`);
+        console.log(response.data.message);
+      } catch (error) {
+        console.log(error.response.data.message);
+      }
+    });
+  </script>
+</body>
+</html>

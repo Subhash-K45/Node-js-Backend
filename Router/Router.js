@@ -24,8 +24,6 @@ Product.collection.createIndex({ createdAt: -1 });
 
 router.post("/",MiddleWare, async (req, res) => {
   console.log(req.body);
-  const { productID, name, price, featured, rating, createdAt, company } = req.body;
-  const findId=await Product.findOne({productID})
   try {
     const { productID, name, price, featured, rating, createdAt, company } = req.body;
     const findId=await Product.findOne({productID})
