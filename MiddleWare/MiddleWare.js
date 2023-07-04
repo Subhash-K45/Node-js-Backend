@@ -10,7 +10,7 @@ const authenticateMiddleware = (req, res, next) => {
     const token = authorizationHeader.split(' ')[1]
     const decodedToken = jwt.verify(token, JWT_SECRET);
 
-    req.user = decodedToken.email;
+    req.user = decodedToken.Email;
 
     next();
   } catch (error) {

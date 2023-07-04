@@ -149,7 +149,7 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
     
-    const token = jwt.sign({ email: user.email }, JWT_SECRET);
+    const token = jwt.sign({ email: user.Email }, JWT_SECRET);
 
     res.send({ token });
   } catch (error) {
@@ -180,7 +180,7 @@ router.post('/signup', async (req, res) => {
     await newUser.save();
     console.log("User created successfully");
 
-    const token = jwt.sign({ email:newUser.email }, JWT_SECRET);
+    const token = jwt.sign({ email:newUser.Email }, JWT_SECRET);
 
     res.send({ message: 'User created successfully', token });
   } catch (error) {
