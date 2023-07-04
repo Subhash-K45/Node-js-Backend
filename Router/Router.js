@@ -2,14 +2,14 @@ const express = require("express");
 const router = express.Router();
 const { Product, User } = require("../mongoose/mongoose");
 const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
-const bcrypt=require("bcrypt")
+const bcrypt = require("bcrypt");
 const JWT_SECRET = "M72JGNgJpX";
-const MiddleWare=require("../MiddleWare/MiddleWare")
-router.get("/",MiddleWare, async (req, res) => {
+const MiddleWare = require("../MiddleWare/MiddleWare");
+
+router.get("/", MiddleWare, async (req, res) => {
   try {
     const allProducts = await Product.find();
-    if (!allProducts) {
+    if (!allProducts || allProducts.length === 0) {
       return res.status(404).json({ message: "No products found" });
     }
     res.send(allProducts);
@@ -22,13 +22,13 @@ router.get("/",MiddleWare, async (req, res) => {
 Product.collection.createIndex({ name: 1 });
 Product.collection.createIndex({ createdAt: -1 });
 
-router.post("/",MiddleWare, async (req, res) => {
+router.post("/", MiddleWare, async (req, res) => {
   console.log(req.body);
   try {
     const { productID, name, price, featured, rating, createdAt, company } = req.body;
-    const findId=await Product.findOne({productID})
-    if(findId){
-      return res.json({message:"Product already found"})
+    const findId = await Product.findOne({ productID });
+    if (findId) {
+      return res.json({ message: "Product already found" });
     }
     const newProduct = new Product({
       productID,
@@ -48,19 +48,19 @@ router.post("/",MiddleWare, async (req, res) => {
   }
 });
 
-router.put("/:id",MiddleWare, async (req, res) => {
+router.put("/:id", MiddleWare, async (req, res) => {
   try {
-    const {id} = (req.params);
+    const { id } = req.params;
     const { productID, name, price, featured, rating, createdAt, company } = req.body;
 
-    const update = await Product.findOneAndUpdate({productID}, {
-      productID:productID,
-      name:name,
-      price:price,
-      featured:featured,
-      rating:rating,
-      createdAt:createdAt,
-      company:company,
+    const update = await Product.findOneAndUpdate({ productID }, {
+      productID,
+      name,
+      price,
+      featured,
+      rating,
+      createdAt,
+      company,
     });
 
     if (!update) {
@@ -75,11 +75,11 @@ router.put("/:id",MiddleWare, async (req, res) => {
   }
 });
 
-router.delete("/:id",MiddleWare, async (req, res) => {
+router.delete("/:id", MiddleWare, async (req, res) => {
   try {
-    const { id } = Number(req.params);
-   const{productID}=req.body
-    const deletedProduct = await Product.findOneAndDelete({productID});
+    const { id } = req.params;
+    const { productID } = req.body;
+    const deletedProduct = await Product.findOneAndDelete({ productID });
     if (!deletedProduct) {
       return res.status(404).json({ message: "Product not found" });
     }
@@ -91,10 +91,10 @@ router.delete("/:id",MiddleWare, async (req, res) => {
   }
 });
 
-router.get("/featured", MiddleWare,async (req, res) => {
+router.get("/featured", MiddleWare, async (req, res) => {
   try {
     const featuredProducts = await Product.find({ featured: true });
-    if (!featuredProducts.length) {
+    if (!featuredProducts || featuredProducts.length === 0) {
       return res.status(404).json({ message: "No featured products found" });
     }
     res.send(featuredProducts);
@@ -104,30 +104,27 @@ router.get("/featured", MiddleWare,async (req, res) => {
   }
 });
 
-router.get("/price/:maxprice",MiddleWare, async (req, res) => {
-    try {
-        const{maxprice}=(req.params)
-        op=(Number((maxprice).slice(1,)))
-        const products = await Product.find({ price: { $lt: op} });
-         if (!products.length) {
-        return res.status(404).json({ message: "No products found within the specified price range" });
-      }
-      
-      res.send(products);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: "Error retrieving products" });
-    }
-  });
-  
-  
-
-router.get("/rating/:minrating",MiddleWare, async (req, res) => {
+router.get("/price/:maxprice", MiddleWare, async (req, res) => {
   try {
-    const op=req.params.minrating
-    const minRating = Number(op.slice(1,));
+    const { maxprice } = req.params;
+    const op = Number(maxprice.slice(1));
+    const products = await Product.find({ price: { $lt: op } });
+    if (!products || products.length === 0) {
+      return res.status(404).json({ message: "No products found within the specified price range" });
+    }
+    res.send(products);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error retrieving products" });
+  }
+});
+
+router.get("/rating/:minrating", MiddleWare, async (req, res) => {
+  try {
+    const op = req.params.minrating;
+    const minRating = Number(op.slice(1));
     const products = await Product.find({ rating: { $gt: minRating } });
-    if (!products.length) {
+    if (!products || products.length === 0) {
       return res.status(404).json({ message: "No products found with the specified minimum rating" });
     }
     res.send(products);
@@ -141,12 +138,12 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({Email: email });
-   
+    const user = await User.findOne({ Email: email });
+
     if (!user || !(await bcrypt.compare(password, user.Password))) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
-    
+
     const token = jwt.sign({ email: user.Email }, JWT_SECRET);
 
     res.send({ token });
@@ -156,29 +153,28 @@ router.post('/login', async (req, res) => {
   }
 });
 
-
 router.post('/signup', async (req, res) => {
   try {
-    const { firstName, lastName, Email, password } = req.body;
-    const existingUser = await User.find({ Email : Email});
-    if (existingUser.length>0) {
+    const { firstName, lastName, email, password } = req.body;
+    const existingUser = await User.findOne({ Email: email });
+    if (existingUser) {
       return res.status(409).json({ message: 'User already exists' });
     }
     const saltRounds = 10;
-    
+
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    
+
     const newUser = new User({
-      FirstName:firstName,
-      LastName:lastName,
-      Email,
-      Password:hashedPassword
+      FirstName: firstName,
+      LastName: lastName,
+      Email: email,
+      Password: hashedPassword,
     });
 
     await newUser.save();
     console.log("User created successfully");
 
-    const token = jwt.sign({ email:newUser.Email }, JWT_SECRET);
+    const token = jwt.sign({ email: newUser.Email }, JWT_SECRET);
 
     res.send({ message: 'User created successfully', token });
   } catch (error) {

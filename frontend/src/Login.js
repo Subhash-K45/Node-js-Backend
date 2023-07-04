@@ -13,7 +13,7 @@ const Login = () => {
     axios.post("https://product-api-7eap.onrender.com/login",{
     Email:email,
     Password:password
-    })
+    }).then(res=>console.log(res.data)).catch(err=>console.log(err))
       },[state])
   function handle_Email_change(e){
     setEmail(e.target.value)

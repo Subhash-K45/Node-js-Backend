@@ -1,3 +1,4 @@
+
 const jwt = require('jsonwebtoken');
 const JWT_SECRET="M72JGNgJpX"
 const authenticateMiddleware = (req, res, next) => {
