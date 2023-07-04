@@ -9,12 +9,7 @@ const Login = () => {
   const [email,setEmail]=useState("")
   const[password,SetPassword]=useState("")
   const[state,isState]=useState("")
-  useEffect(()=>{
-    axios.post("/login",{
-    Email:email,
-    Password:password
-    }).then(res=>console.log(res.data)).catch(err=>console.log(err))
-      },[state])
+
   function handle_Email_change(e){
     setEmail(e.target.value)
   }
@@ -22,10 +17,14 @@ const Login = () => {
   function handle_Password_Change(e){
     SetPassword(e.target.value)
   }
-  function Handle_Submit(e){
+  async function Handle_Submit(e){
     e.preventDefault()
     isState(prev=>!prev)
     console.log(email,password)
+    await axios.post("/login",{
+      Email:email,
+      Password:password
+      }).then(res=>console.log(res.data)).catch(err=>console.log(err))
   }
 return(
   <div>

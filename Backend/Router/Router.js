@@ -162,8 +162,9 @@ router.post('/login', async (req, res) => {
 router.post('/signup', async (req, res) => {
   try {
     const { firstName, lastName, Email, password } = req.body;
-    const existingUser = await User.find({ Email : Email});
-    if (existingUser.length>0) {
+    const existingUser = await User.findOne({ Email : Email});
+    console.log(existingUser)
+    if (existingUser) {
       return res.status(409).json({ message: 'User already exists' });
     }
     const saltRounds = 10;
