@@ -10,7 +10,7 @@ const Login = () => {
   const[password,SetPassword]=useState("")
   const[state,isState]=useState("")
   useEffect(()=>{
-    axios.post("https://product-api-7eap.onrender.com/login",{
+    axios.post("/login",{
     Email:email,
     Password:password
     }).then(res=>console.log(res.data)).catch(err=>console.log(err))
